@@ -6,8 +6,21 @@
 </head>
 
 <body>
+
+    <button id='rockButton'>Rock</button>
+    <button id='paperButton'>Paper</button>
+    <button id='scissorButton'>Scissor</button>
+
+    <div id='resultDisplay'>
+    </div>
+
     <script>
 
+        let playerScore = 0;
+        let computerScore = 0;
+        let roundNumber = 0
+
+        // Returns a random selection in string for the computer
         function computerPlay () {
             let rand = Math.random();
             if(rand<0.333) return 'rock';
@@ -15,33 +28,66 @@
             else return 'scissor';
         }
 
+        // prints the result to a div
+        function displayResult(result) {
+            let div = document.getElementById('resultDisplay');
+
+            let node = document.createElement('p');
+            node.textContent = result.toString();
+
+            div.appendChild(node);
+        }
+
+
+        // Resets the scores
+        function resetGame() {
+            playerScore = 0;
+            computerScore = 0;
+            roundNumber = 0
+
+            let div = document.getElementById('resultDisplay');
+            while (div.firstChild) {
+                div.removeChild(div.firstChild);
+            }
+        }
+
+
+        // Invoked when a button is clicked
         function playRound(playerSelection, computerSelection) {
-            if (playerSelection==computerSelection) return 'tie';
-            else if (playerSelection=='paper'&&computerSelection=='rock') return 'player wins';
-            else if (playerSelection=='rock'&&computerSelection=='scissor') return 'player wins';
-            else if (playerSelection=='scissor'&&computerSelection=='paper') return 'player wins';
-            else return 'computer wins';
+            let result = '';
+
+            if (roundNumber==5) resetGame();
+
+            if (playerSelection==computerSelection) result = 'tie';
+            else if (playerSelection=='paper'&&computerSelection=='rock') {
+                result = 'player wins ' + ++playerScore + "-" + computerScore;
+                roundNumber++;
+            }
+            else if (playerSelection=='rock'&&computerSelection=='scissor') {
+                result = 'player wins ' + ++playerScore + "-" + computerScore;
+                roundNumber++;
+            }
+            else if (playerSelection=='scissor'&&computerSelection=='paper') {
+                result = 'player wins ' + ++playerScore + "-" + computerScore;
+                roundNumber++;
+            }
+            else {
+                result = 'computer wins ' + ++computerScore + "-" + playerScore;
+                roundNumber++;
+            }
+
+            displayResult(result);
+            if (roundNumber==5)
+                if(computerScore>playerScore) displayResult("Computer wins");
+                else displayResult("Player wins");
+
         }
 
-        function game() {
-
-        let playerScore = 0;
-        let computerScore = 0;
-        for (let roundNumber = 0; roundNumber <5 ; roundNumber++) {
-
-            let playerSelection = prompt("Rock, paper or scissor?","").toLowerCase();
-            let computerSelection = computerPlay();
-            let score = playRound(playerSelection, computerSelection);
-            if (score == 'player wins') playerScore++;
-            else if(score == 'computer wins') computerScore++;
-            else roundNumber--;
-            console.log(score);
-            console.log("player: " + playerScore);
-            console.log("computer: " + computerScore);
-        }
-
-
-        }
+        // Event listeners for the buttons
+        document.getElementById('rockButton').addEventListener('click',function() { playRound('rock',computerPlay());});
+        document.getElementById('paperButton').addEventListener('click',function() { playRound('paper',computerPlay());});
+        document.getElementById('scissorButton').addEventListener('click',function() { playRound('scissor',computerPlay());});
+        
 
     </script>
 
